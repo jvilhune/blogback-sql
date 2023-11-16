@@ -1,0 +1,31 @@
+{
+  "name": "blogback-sql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migration:down": "node util/rollback.js",
+    "init": "run-func controllers/blogs.js init",
+    "printBlogs": "run-func printBlogs.js printBlogs"
+  },
+  "author": "AJV",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.3",
+    "run-func": "^3.0.0",
+    "sequelize": "^6.35.0",
+    "umzug": "^3.4.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@flydotio/dockerfile": "^0.4.10",
+    "nodemon": "^3.0.1"
+  }
+}

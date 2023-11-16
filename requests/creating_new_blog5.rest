@@ -1,0 +1,9 @@
+POST http://localhost:3001/api/blogs  
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlaWtraXNpIiwiaWQiOjIsImlhdCI6MTcwMDE1NDMxMCwiZXhwIjoxNzAwMjQwNzEwLCJqdGkiOiIxYzM2ZTdhNy1kYTA2LTRlOGEtYmZkNS1mZTYzOTNjMmUyMzEifQ.cZ1vvo2JyNxxHH4kn16fDyIDTjPEhjmskmaM9ZgXQMw
+
+{
+"title": "First class tests", "author": "Robert C. Martin", "url": "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll", "likes": 12, "year": 2022
+}
+
+

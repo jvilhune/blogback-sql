@@ -1,0 +1,6 @@
+node_modules
+fly.toml
+Dockerfile
+blogback-sql.txt
+.dockerignore
+.env
