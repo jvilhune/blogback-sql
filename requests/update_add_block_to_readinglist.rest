@@ -3,7 +3,7 @@ Content-Type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp2aWxodW5lIiwiaWQiOjEsImlhdCI6MTcwMDE1NzkwMSwiZXhwIjoxNzAwMjQ0MzAxLCJqdGkiOiJlNzI0ZjdlMi1mZmU5LTQxNzMtYWM3ZC1jYWIwY2U5MDM0OTQifQ.0Chrtox2UXIY17tHqrLPGh1HF_pVybuyp39xc96Zzr8
 
 {
-"blogId": 5, "userId": 1
+"blogId": 5, "userId": 3
 }
 
 

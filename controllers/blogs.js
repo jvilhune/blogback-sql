@@ -32,11 +32,14 @@ router.get('/', async (req, res) => {
   const where = {}
 
   if (req.query.likes) {
-    where.author = req.query.likes
+    /* likes param do nothing, just testing it here */
+    /* GET http://localhost:3001/api/blogs?search=Martin */
+    /* GET http://localhost:3001/api/blogs?search=Martin&likes=88 */
+
+    where.likes = req.query.likes
   }
 
   if (req.query.search) {
-
     where.author = {
       [Op.substring]: req.query.search
     }
@@ -45,8 +48,6 @@ router.get('/', async (req, res) => {
       [Op.substring]: req.query.search
     }
   }
-
-  //console.log('where', where)
   var blogs
   if (req.query.search) {
     blogs = await Blog.findAll({
@@ -74,7 +75,6 @@ router.get('/', async (req, res) => {
       ],
     })
 
-    console.log('where', where)
     res.json(blogs)
   }
   else {
@@ -90,32 +90,7 @@ router.get('/', async (req, res) => {
   }
 })
 
-/*
-router.get('/', async (req, res) => {
-  const where = {}
 
-  if (req.query.important) {
-    where.important = req.query.important === "true"
-  } 
-
-  if (req.query.search) {
-    where.title = {
-      [Op.substring]: req.query.search
-    }
-  }
-
-  const blogs = await Blog.findAll({ 
-    attributes: { exclude: ['date', 'userId'] },
-    include: {
-      model: User,
-      attributes: ['name', 'username']
-    },
-    where
-  })
-
-  res.json(blogs)
-})
-*/
 router.post('/', tokenExtractor, async (req, res) => {
   try {
     const user = await User.findByPk(req.decodedToken.id)
@@ -150,7 +125,12 @@ router.delete('/:id', tokenExtractor, blogFinder, async (req, res) => {
   console.log('user.passwordhash', user.passwordhash)
   */
 
-  if (req.blog && (req.blog.userId === user.id)) {
+  if (!req.blog) {
+    res.status(404).end()
+  } else if (!user || user.id !== req.blog.userId) {
+    res.status(401).json({ error: 'Unathorized user to delete this blog' });
+  }
+  else if (req.blog && (req.blog.userId === user.id)) {
     /*
     console.log('req.blog.id', req.blog.id)
     console.log('req.blog.userId', req.blog.userId)
@@ -161,7 +141,7 @@ router.delete('/:id', tokenExtractor, blogFinder, async (req, res) => {
     res.status(204).end()
   }
   else {
-    res.status(400).end()
+    res.status(404).end()
   }
 })
 
@@ -179,24 +159,4 @@ module.exports = router
 //module.exports = { init }
 
 
-/*
-POST http://localhost:3001/api/notes
-Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp2aWxodW5lIiwiaWQiOjEsImlhdCI6MTY5OTY3NzE4NH0.y1PEG0889TkUKNNUwAMQsEKmXBGrdRvi5vtxpZs-mFI
-
-{
-  "content": "For the cloud service platforms Fly.io and Heroku it is possible to create a Postgres (PostgreSQL) database for the application",
-  "important": true
-}
-*/
-
-/*
-{
-  "id": 8,
-  "content": "For the cloud service platforms Fly.io and Heroku it is possible to create a Postgres (PostgreSQL) database for the application",
-  "important": true,
-  "userId": 1,
-  "date": "2023-11-11 04:39:04.450 +00:00"
-}
-*/
 

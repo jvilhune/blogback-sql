@@ -18,42 +18,8 @@ const userFinder = async (req, res, next) => {
   next()
 } 
 
-
-/*
-router.put('/', tokenExtractor, isAdmin, async (req, res) => {
-  var user
-  if(req.params.id) {
-    user = await User.findByPk(req.params.id)
-    if (user) {
-      user.disabled = req.body.disabled
-      await user.save()
-      res.json(user)
-    }
-    else {
-      res.status(404).end()
-    }
-  }
-  else if(req.params.username) {
-    user = await User.findOne({ 
-      where: { 
-        username: req.params.username
-      }
-    })
-
-    if (user) {
-      user.name = req.body.name
-      await user.save()
-      res.json(user)
-    }
-    else {
-      res.status(404).end()
-    }
-  }
-})
-*/
-
 router.put('/:username', tokenExtractor, isAdmin, async (req, res) => {
-  console.log('USERNAME PARAM')
+  //console.log('USERNAME PARAM')
   const user = await User.findOne({ 
     where: { 
       username: req.params.username
@@ -70,7 +36,7 @@ router.put('/:username', tokenExtractor, isAdmin, async (req, res) => {
 })
 
 router.put('/userrights/:id', tokenExtractor, isAdmin, userFinder, async (req, res) => {
-  console.log('ID PARAM')
+  //console.log('ID PARAM')
   const user = req.user
   if (user) {
     user.disabled = req.body.disabled
@@ -80,11 +46,6 @@ router.put('/userrights/:id', tokenExtractor, isAdmin, userFinder, async (req, r
     res.status(404).end()
   }
 })
-
-
-
-
-/* */
 
 router.get('/', async (req, res) => {
   const users = await User.findAll({
@@ -100,8 +61,6 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-  console.log('send user occurred')
-  console.log('req.body', req.body)
   try {   
 
     if (req.body.password.length < 3) {
@@ -123,15 +82,11 @@ router.post('/', async (req, res) => {
       username: retuser.username,
       name: retuser.name
     }
-
-    console.log('resuserObject', resuserObject)
-
     res.json(resuserObject)
   } catch(error) {
     return res.status(400).json({ error })
   }
 })
-
 
 router.get('/:id', async (req, res) => {
   const { id } = req.params;

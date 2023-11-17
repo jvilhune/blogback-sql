@@ -1,6 +1,6 @@
 PUT http://localhost:3001/api/users/userrights/2
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp2aWxodW5lIiwiaWQiOjEsImlhdCI6MTY5OTk2NDkwOH0.a23NiFDsgYJiL6yTl8lAMgD0Jb4IoJK-YFEjFL-B324
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp2aWxodW5lIiwiaWQiOjEsImlhdCI6MTcwMDE5NTc4MiwiZXhwIjoxNzAwMjgyMTgyLCJqdGkiOiJkYzU1MTcxYi0yZmE4LTQyNGEtYWFhYy1jOTE3MDExMWExYTUifQ.tX1IR8grn0jqmz0QC2E-Q8-wLkbwfw95F3Pe7PbtzjQ
 
 {
 "disabled": false
