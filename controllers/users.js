@@ -88,26 +88,49 @@ router.post('/', async (req, res) => {
   }
 })
 
+
+/* READING LISTS */
+/* Returns the whole reading list - GET /api/users/:id */
+/* Returns read blogs - GET /api/users/:id?read=true */
+/* Returns unread blogs - GET /api/users/:id?read=false */
+/* Mark the blog in own reading list as read - PUT /api/readinglists/:id { read: true } */
+/* Add blog to reading list - POST /api/readinglists { blog_id: 4, user_id: 3 } */
+/* Get reading lists - GET /api/readinglists */
+
 router.get('/:id', async (req, res) => {
+  console.log('req.params', req.params)
   const { id } = req.params;
   let where = {}
   const user = await User.findByPk(id, {
-    where: { id: req.params.userId },
-    attributes: ['name', 'username','disabled'],
-    where,
+    //where: { id: req.params.id }, //userId },
+    //attributes: ['name', 'username','disabled'],
+
+    /* User */
+    attributes: ['id', 'name', 'username', 'admin', 'disabled', 'createdAt', 'updatedAt'],
+    //where,
     include: [
       {
+        /* User's own blogs */
+        model: Blog,
+        attributes: ['id', 'title', 'author', 'url', 'likes', 'year', 'userId', 'createdAt','updatedAt'],
+        //attributes: { exclude: ['userId'] }, 
+      },
+      {
+        /* Blogs that this user has marked to his reading list */
         model: Blog,
         as: 'readings',
-        attributes: { exclude: ['userId', 'createdAt', 'updatedAt'] },
+        attributes: ['id', 'title', 'author', 'url', 'likes', 'year', 'userId', 'createdAt','updatedAt'],
+        //attributes: { exclude: ['userId', 'createdAt', 'updatedAt'] },
         through: {
           attributes: [],
         },
         
         include: [
           {
+            /* Shows all reading lists connected to this blog, i.e. also reading lists marked to this blog by other users */
             model: ReadingList,
-            attributes: ['read', 'id'],
+            //attributes: ['read', 'id'],
+            attributes: ['id', 'userId', 'blogId', 'read'],
             where: req.query?.read != null
             ? { read: req.query.read }
             : { },
@@ -120,7 +143,6 @@ router.get('/:id', async (req, res) => {
     ],
     
   });
-
   if (user) {
     res.json(user);
   } else {
