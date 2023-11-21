@@ -4,6 +4,7 @@ const { Op } = require('sequelize')
 
 const { tokenExtractor } = require('../util/middleware')
 const { Blog, User } = require('../models')
+const ReadingList = require('../models/reading_list')
 const { SECRET } = require('../util/config')
 const { sequelize } = require('../util/db')
 
@@ -79,10 +80,12 @@ router.get('/', async (req, res) => {
   }
   else {
     blogs = await Blog.findAll({ 
-      attributes: { exclude: ['userId'] },
+      //attributes: { exclude: ['userId'] },
+      attributes: ['id', 'title', 'author', 'url', 'likes', 'year', 'userId', 'createdAt','updatedAt'],
       include: {
         model: User,
-        attributes: ['name', 'username']
+        //attributes: ['name', 'username']
+        attributes: ['id', 'name', 'username', 'admin', 'disabled', 'createdAt', 'updatedAt'],
       },
       where
     })
@@ -104,9 +107,11 @@ router.post('/', tokenExtractor, async (req, res) => {
 
 const blogFinder = async (req, res, next) => {
   req.blog = await Blog.findByPk(req.params.id)
+  //console.log('req.blog', req.blog)
   next()
 } 
 
+/*
 router.get('/:id', blogFinder, async (req, res) => {
   if (req.blog) {
     res.json(req.blog)
@@ -114,6 +119,47 @@ router.get('/:id', blogFinder, async (req, res) => {
     res.status(404).end()
   }
 })
+*/
+
+
+/* Check models/index.js file : Blog.belongsToMany(User, { through: ReadingList, as: 'readingUsers' }) */
+router.get('/:id', async (req, res) => {
+  const blog = await Blog.findByPk(req.params.id, {
+
+  include: [
+    {
+      /* User's own blogs */
+      model: User,
+      attributes: ['id', 'name', 'username', 'admin', 'disabled', 'createdAt', 'updatedAt'],
+      //attributes: { exclude: ['userId'] }, 
+    },
+    {
+      model: User,
+      as: 'readingUsers',
+      attributes: ['id', 'name', 'username', 'admin', 'disabled', 'createdAt', 'updatedAt'],
+      //attributes: { exclude: ['userId'] }, 
+      through: {
+        attributes: [],
+      },
+        include: [
+          {
+            /* Shows all reading lists narked by this user, i.e. also reading lists marked to the other blogs */
+            model: ReadingList,
+            //attributes: ['read', 'id'],
+            attributes: ['id', 'userId', 'blogId', 'read'],
+          },
+          
+        ],
+    }],
+  })
+  if (req) {
+    res.json(blog)
+  } else {
+    res.status(404).end()
+  }
+})
+
+
 
 router.delete('/:id', tokenExtractor, blogFinder, async (req, res) => {
   const user = await User.findByPk(req.decodedToken.id)
@@ -157,6 +203,4 @@ router.put('/:id', blogFinder, async (req, res) => {
 
 module.exports = router
 //module.exports = { init }
-
-
 

@@ -90,6 +90,7 @@ router.post('/', async (req, res) => {
 
 
 /* READING LISTS */
+/* Check models/index.js file : User.belongsToMany(Blog, { through: ReadingList, as: 'readings' }) */
 /* Returns the whole reading list - GET /api/users/:id */
 /* Returns read blogs - GET /api/users/:id?read=true */
 /* Returns unread blogs - GET /api/users/:id?read=false */
@@ -98,7 +99,8 @@ router.post('/', async (req, res) => {
 /* Get reading lists - GET /api/readinglists */
 
 router.get('/:id', async (req, res) => {
-  console.log('req.params', req.params)
+  console.log('req.params.id', req.params.id)
+  console.log('req.query.read', req.query.read)
   const { id } = req.params;
   let where = {}
   const user = await User.findByPk(id, {
@@ -119,7 +121,7 @@ router.get('/:id', async (req, res) => {
         /* Blogs that this user has marked to his reading list */
         model: Blog,
         as: 'readings',
-        attributes: ['id', 'title', 'author', 'url', 'likes', 'year', 'userId', 'createdAt','updatedAt'],
+        //attributes: ['id', 'title', 'author', 'url', 'likes', 'year', 'userId', 'createdAt','updatedAt'],
         //attributes: { exclude: ['userId', 'createdAt', 'updatedAt'] },
         through: {
           attributes: [],
@@ -131,17 +133,18 @@ router.get('/:id', async (req, res) => {
             model: ReadingList,
             //attributes: ['read', 'id'],
             attributes: ['id', 'userId', 'blogId', 'read'],
-            where: req.query?.read != null
+            /* Request can be GET /api/users/:id?read=true or GET /api/users/:id?read=false or GET /api/users/:id (req.query.read is null, undefined) */
+            /* According to the request */
+            /* Return ReadingLists where req.query.read = true or */
+            /* Return ReadingLists where req.query.read = false or */
+            /* Return ReadingLists where req.query.read = true or req.query.read = false */
+            where: req.query.read != null
             ? { read: req.query.read }
             : { },
-          },
-          
-        ],
-        
-      },
-      
-    ],
-    
+          },          
+        ],        
+      },      
+    ],    
   });
   if (user) {
     res.json(user);
